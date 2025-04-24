@@ -1,12 +1,20 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from .models import Genre, Actor, Play, TheatreHall, Performance
-from .serializers import (
+from theatre_service.models import (
+    Genre,
+    Actor,
+    Play,
+    TheatreHall,
+    Performance,
+    Reservation
+)
+from theatre_service.serializers import (
     GenreSerializer,
     ActorSerializer,
     PlaySerializer,
     TheatreHallSerializer,
     PerformanceSerializer,
+    ReservationSerializer,
 )
 
 
@@ -232,4 +240,49 @@ class PerformanceDetail(APIView):
             return JsonResponse({"detail": "Not found."}, status=404)
 
         performance.delete()
+        return JsonResponse({}, status=204)
+
+
+class ReservationList(APIView):
+    def get(self, request):
+        reservations = Reservation.objects.all()
+        serializer = ReservationSerializer(reservations, many=True)
+        return JsonResponse({'data': serializer.data})
+
+    def post(self, request):
+        serializer = ReservationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data}, status=201)
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+
+class ReservationDetail(APIView):
+    def get(self, request, pk):
+        try:
+            reservation = Reservation.objects.get(pk=pk)
+        except Reservation.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+        serializer = ReservationSerializer(reservation)
+        return JsonResponse({'data': serializer.data})
+
+    def put(self, request, pk):
+        try:
+            reservation = Reservation.objects.get(pk=pk)
+        except Reservation.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        serializer = ReservationSerializer(reservation, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data})
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+    def delete(self, request, pk):
+        try:
+            reservation = Reservation.objects.get(pk=pk)
+        except Reservation.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        reservation.delete()
         return JsonResponse({}, status=204)
