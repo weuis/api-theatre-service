@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from .models import Genre, Actor
-from .serializers import GenreSerializer, ActorSerializer
+from .models import Genre, Actor, Play
+from .serializers import GenreSerializer, ActorSerializer, PlaySerializer
 
 
 class GenreList(APIView):
@@ -93,3 +93,47 @@ class ActorDetail(APIView):
         actor.delete()
         return JsonResponse({}, status=204)
 
+
+class PlayList(APIView):
+    def get(self, request):
+        plays = Play.objects.all()
+        serializer = PlaySerializer(plays, many=True)
+        return JsonResponse({'data': serializer.data})
+
+    def post(self, request):
+        serializer = PlaySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data}, status=201)
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+
+class PlayDetail(APIView):
+    def get(self, request, pk):
+        try:
+            play = Play.objects.get(pk=pk)
+        except Play.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+        serializer = PlaySerializer(play)
+        return JsonResponse({'data': serializer.data})
+
+    def put(self, request, pk):
+        try:
+            play = Play.objects.get(pk=pk)
+        except Play.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        serializer = PlaySerializer(play, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data})
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+    def delete(self, request, pk):
+        try:
+            play = Play.objects.get(pk=pk)
+        except Play.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        play.delete()
+        return JsonResponse({}, status=204)
