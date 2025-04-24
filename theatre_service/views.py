@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from .models import Genre, Actor, Play, TheatreHall
+from .models import Genre, Actor, Play, TheatreHall, Performance
 from .serializers import (
     GenreSerializer,
     ActorSerializer,
     PlaySerializer,
-    TheatreHallSerializer
+    TheatreHallSerializer,
+    PerformanceSerializer,
 )
 
 
@@ -186,4 +187,49 @@ class TheatreHallDetail(APIView):
             return JsonResponse({"detail": "Not found."}, status=404)
 
         theatre_hall.delete()
+        return JsonResponse({}, status=204)
+
+
+class PerformanceList(APIView):
+    def get(self, request):
+        performances = Performance.objects.all()
+        serializer = PerformanceSerializer(performances, many=True)
+        return JsonResponse({'data': serializer.data})
+
+    def post(self, request):
+        serializer = PerformanceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data}, status=201)
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+
+class PerformanceDetail(APIView):
+    def get(self, request, pk):
+        try:
+            performance = Performance.objects.get(pk=pk)
+        except Performance.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+        serializer = PerformanceSerializer(performance)
+        return JsonResponse({'data': serializer.data})
+
+    def put(self, request, pk):
+        try:
+            performance = Performance.objects.get(pk=pk)
+        except Performance.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        serializer = PerformanceSerializer(performance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data})
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+    def delete(self, request, pk):
+        try:
+            performance = Performance.objects.get(pk=pk)
+        except Performance.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        performance.delete()
         return JsonResponse({}, status=204)
