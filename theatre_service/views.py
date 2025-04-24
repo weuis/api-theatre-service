@@ -1,7 +1,12 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from .models import Genre, Actor, Play
-from .serializers import GenreSerializer, ActorSerializer, PlaySerializer
+from .models import Genre, Actor, Play, TheatreHall
+from .serializers import (
+    GenreSerializer,
+    ActorSerializer,
+    PlaySerializer,
+    TheatreHallSerializer
+)
 
 
 class GenreList(APIView):
@@ -136,4 +141,49 @@ class PlayDetail(APIView):
             return JsonResponse({"detail": "Not found."}, status=404)
 
         play.delete()
+        return JsonResponse({}, status=204)
+
+
+class TheatreHallList(APIView):
+    def get(self, request):
+        theatre_halls = TheatreHall.objects.all()
+        serializer = TheatreHallSerializer(theatre_halls, many=True)
+        return JsonResponse({'data': serializer.data})
+
+    def post(self, request):
+        serializer = TheatreHallSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data}, status=201)
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+
+class TheatreHallDetail(APIView):
+    def get(self, request, pk):
+        try:
+            theatre_hall = TheatreHall.objects.get(pk=pk)
+        except TheatreHall.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+        serializer = TheatreHallSerializer(theatre_hall)
+        return JsonResponse({'data': serializer.data})
+
+    def put(self, request, pk):
+        try:
+            theatre_hall = TheatreHall.objects.get(pk=pk)
+        except TheatreHall.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        serializer = TheatreHallSerializer(theatre_hall, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data})
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+    def delete(self, request, pk):
+        try:
+            theatre_hall = TheatreHall.objects.get(pk=pk)
+        except TheatreHall.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        theatre_hall.delete()
         return JsonResponse({}, status=204)
