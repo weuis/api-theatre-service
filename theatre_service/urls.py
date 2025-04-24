@@ -11,7 +11,9 @@ from theatre_service.views import (
    PerformanceList,
    PerformanceDetail,
    ReservationList,
-   ReservationDetail
+   ReservationDetail,
+   TicketList,
+   TicketDetail
 )
 
 
@@ -29,6 +31,8 @@ urlpatterns = [
     path('performances/<int:pk>/', PerformanceDetail.as_view(), name='performance-detail'),
     path('reservations/', ReservationList.as_view(), name='reservation-create'),
     path('reservations/<int:pk>/', ReservationDetail.as_view(), name='reservation-detail'),
+    path('tickets/', TicketList.as_view(), name='ticket-create'),
+    path('tickets/<int:pk>/', TicketDetail.as_view(), name='ticket-detail'),
 ]
 
 app_name = "theatre_service"

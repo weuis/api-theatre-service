@@ -6,7 +6,8 @@ from theatre_service.models import (
     Play,
     TheatreHall,
     Performance,
-    Reservation
+    Reservation,
+    Ticket
 )
 from theatre_service.serializers import (
     GenreSerializer,
@@ -15,6 +16,7 @@ from theatre_service.serializers import (
     TheatreHallSerializer,
     PerformanceSerializer,
     ReservationSerializer,
+    TicketSerializer
 )
 
 
@@ -285,4 +287,49 @@ class ReservationDetail(APIView):
             return JsonResponse({"detail": "Not found."}, status=404)
 
         reservation.delete()
+        return JsonResponse({}, status=204)
+
+
+class TicketList(APIView):
+    def get(self, request):
+        tickets = Ticket.objects.all()
+        serializer = TicketSerializer(tickets, many=True)
+        return JsonResponse({'data': serializer.data})
+
+    def post(self, request):
+        serializer = TicketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data}, status=201)
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+
+class TicketDetail(APIView):
+    def get(self, request, pk):
+        try:
+            ticket = Ticket.objects.get(pk=pk)
+        except Ticket.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+        serializer = TicketSerializer(ticket)
+        return JsonResponse({'data': serializer.data})
+
+    def put(self, request, pk):
+        try:
+            ticket = Ticket.objects.get(pk=pk)
+        except Ticket.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        serializer = TicketSerializer(ticket, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'data': serializer.data})
+        return JsonResponse({'errors': serializer.errors}, status=400)
+
+    def delete(self, request, pk):
+        try:
+            ticket = Ticket.objects.get(pk=pk)
+        except Ticket.DoesNotExist:
+            return JsonResponse({"detail": "Not found."}, status=404)
+
+        ticket.delete()
         return JsonResponse({}, status=204)
