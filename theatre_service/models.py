@@ -1,7 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
-
 
 class Genre(models.Model):
     name = models.CharField(max_length=255)
@@ -70,3 +69,14 @@ class Ticket(models.Model):
     def __str__(self):
         return f"{self.performance} - Row {self.row} Seat {self.seat}"
 
+    @staticmethod
+    def validate_seat(seat: int, num_seats: int, error_to_raise):
+        if not (1 <= seat <= num_seats):
+            raise error_to_raise({
+                "seat": f"Seat must be in the range [1, {num_seats}]"
+            })
+
+    def clean(self):
+        Ticket.validate_seat(
+            self.seat, self.performance.theatre_hall.seats_in_row, ValidationError
+        )

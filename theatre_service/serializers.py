@@ -76,3 +76,15 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ['id', 'row', 'seat', 'performance', 'reservation']
+
+    def validate(self, attrs):
+        performance = attrs["performance"]
+        num_seats = performance.theatre_hall.seats_in_row
+
+        Ticket.validate_seat(
+            attrs["seat"],
+            num_seats,
+            serializers.ValidationError
+        )
+
+        return attrs
