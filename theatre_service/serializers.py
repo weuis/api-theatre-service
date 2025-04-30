@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.conf import settings
 from theatre_service.models import (
     Genre,
     Actor,
@@ -51,6 +52,26 @@ class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Performance
         fields = ('id', 'play', 'theatre_hall', 'show_time')
+
+    def validate(self, attrs):
+        theatre_hall = attrs['theatre_hall']
+        show_time = attrs['show_time']
+        buffer = settings.PERFORMANCE_TIME_BUFFER
+
+        overlapping = Performance.objects.filter(
+            theatre_hall=theatre_hall,
+            show_time__range=(show_time - buffer, show_time + buffer)
+        )
+
+        if self.instance:
+            overlapping = overlapping.exclude(pk=self.instance.pk)
+
+        if overlapping.exists():
+            raise serializers.ValidationError({
+                "show_time": "There is already a performance scheduled in this hall around this time."
+            })
+
+        return attrs
 
 
 class PerformanceDetailSerializer(serializers.ModelSerializer):
