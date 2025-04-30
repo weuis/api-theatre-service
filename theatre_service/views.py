@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-from theatre_service.filters import PerformanceFilter, PlayFilter
+from theatre_service.filters import PerformanceFilter, PlayFilter, ReservationFilter
 
 from theatre_service.models import (
     Genre, Actor, Play, TheatreHall, Performance, Reservation, Ticket
@@ -64,10 +64,12 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
+    serializer_class = ReservationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ReservationFilter
+
     def get_queryset(self):
         return Reservation.objects.select_related('user').prefetch_related('tickets')
-
-    serializer_class = ReservationSerializer
 
 
 class TicketViewSet(viewsets.ModelViewSet):
