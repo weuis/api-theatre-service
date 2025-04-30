@@ -1,12 +1,21 @@
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
+from theatre_service.filters import PerformanceFilter, PlayFilter
+
 from theatre_service.models import (
     Genre, Actor, Play, TheatreHall, Performance, Reservation, Ticket
 )
 from theatre_service.serializers import (
-    GenreSerializer, ActorSerializer, PlaySerializer, PlayDetailSerializer,
+    GenreSerializer,
+    ActorSerializer,
+    PlaySerializer,
+    PlayDetailSerializer,
     TheatreHallSerializer,
-    PerformanceSerializer, PerformanceDetailSerializer,
-    ReservationSerializer, TicketSerializer
+    PerformanceSerializer,
+    PerformanceDetailSerializer,
+    ReservationSerializer,
+    TicketSerializer
 )
 
 
@@ -21,6 +30,10 @@ class ActorViewSet(viewsets.ModelViewSet):
 
 
 class PlayViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = PlayFilter
+    search_fields = ["title", "actors__first_name", "actors__last_name"]
+
     def get_queryset(self):
         return Play.objects.prefetch_related('genres', 'actors')
 
@@ -36,6 +49,10 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = PerformanceFilter
+    search_fields = ["play__title", "play__actors__first_name", "play__actors__last_name"]
+
     def get_queryset(self):
         return Performance.objects.select_related('play', 'theatre_hall')
 
