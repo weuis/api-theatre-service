@@ -31,6 +31,7 @@ class PlaySerializer(serializers.ModelSerializer):
         model = Play
         fields = ['id', 'title', 'description', 'genres', 'actors']
 
+
 class PlayDetailSerializer(serializers.ModelSerializer):
     genres = serializers.StringRelatedField(many=True)
     actors = serializers.StringRelatedField(many=True)
@@ -79,12 +80,28 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         performance = attrs["performance"]
-        num_seats = performance.theatre_hall.seats_in_row
+        row = attrs["row"]
+        seat = attrs["seat"]
 
-        Ticket.validate_seat(
-            attrs["seat"],
-            num_seats,
-            serializers.ValidationError
-        )
+        theatre_hall = performance.theatre_hall
+
+        if not (1 <= row <= theatre_hall.rows):
+            raise serializers.ValidationError({
+                "row": f"Row must be in the range [1, {theatre_hall.rows}]"
+            })
+
+        if not (1 <= seat <= theatre_hall.seats_in_row):
+            raise serializers.ValidationError({
+                "seat": f"Seat must be in the range [1, {theatre_hall.seats_in_row}]"
+            })
+
+        if Ticket.objects.filter(
+                performance=performance,
+                row=row,
+                seat=seat
+        ).exists():
+            raise serializers.ValidationError(
+                {"seat": "This seat is already taken for the selected performance."}
+            )
 
         return attrs
