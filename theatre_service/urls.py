@@ -5,19 +5,32 @@ from theatre_service.views import (
     PerformanceViewSet, ReservationViewSet, TicketViewSet
 )
 
-router = DefaultRouter()
+from theatre_service.public_views import (
+    PublicPlayViewSet, PublicPerformanceViewSet,
+    PublicGenreViewSet, PublicActorViewSet, PublicTheatreHallViewSet
+)
 
-router.register('genre', GenreViewSet, basename='genre')
-router.register('actors', ActorViewSet, basename='actor')
-router.register('plays', PlayViewSet, basename='play')
-router.register('theatrehalls', TheatreHallViewSet, basename='theatrehall')
-router.register('performances', PerformanceViewSet, basename='performance')
-router.register('reservations', ReservationViewSet, basename='reservation')
-router.register('tickets', TicketViewSet, basename='ticket')
+authenticate_router = DefaultRouter()
 
+authenticate_router.register('genre', GenreViewSet, basename='genre')
+authenticate_router.register('actors', ActorViewSet, basename='actor')
+authenticate_router.register('plays', PlayViewSet, basename='play')
+authenticate_router.register('theatrehalls', TheatreHallViewSet, basename='theatrehall')
+authenticate_router.register('performances', PerformanceViewSet, basename='performance')
+authenticate_router.register('reservations', ReservationViewSet, basename='reservation')
+authenticate_router.register('tickets', TicketViewSet, basename='ticket')
+
+public_router = DefaultRouter()
+
+public_router.register(r'plays', PublicPlayViewSet, basename='public-play')
+public_router.register(r'performances', PublicPerformanceViewSet, basename='public-performance')
+public_router.register(r'genres', PublicGenreViewSet, basename='public-genre')
+public_router.register(r'actors', PublicActorViewSet, basename='public-actor')
+public_router.register(r'halls', PublicTheatreHallViewSet, basename='public-hall')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/admin/',include(authenticate_router.urls)),
+    path('api/public/',include(public_router.urls)),
 ]
 
 
