@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from theatre_service.views import (
     GenreViewSet, ActorViewSet, PlayViewSet, TheatreHallViewSet,
@@ -19,5 +20,11 @@ router.register('tickets', TicketViewSet, basename='ticket')
 urlpatterns = [
     path('', include(router.urls)),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
 
 app_name = "theatre_service"
