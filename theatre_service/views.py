@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from theatre_service.filters import PerformanceFilter, PlayFilter, ReservationFilter
@@ -23,16 +23,25 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
+    ordering_fields = ['name']
+    ordering = ['name']
+
 
 class ActorViewSet(viewsets.ModelViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+
+    ordering_fields = ['last_name', 'first_name']
+    ordering = ['last_name', 'first_name']
 
 
 class PlayViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PlayFilter
     search_fields = ["title", "actors__first_name", "actors__last_name"]
+
+    ordering_fields = ['title', 'created_at']
+    ordering = ['title']
 
     def get_queryset(self):
         return Play.objects.prefetch_related('genres', 'actors')
@@ -47,11 +56,17 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
 
+    ordering_fields = ['name']
+    ordering = ['name']
+
 
 class PerformanceViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PerformanceFilter
     search_fields = ["play__title", "play__actors__first_name", "play__actors__last_name"]
+
+    ordering_fields = ['start_time', 'created_at']
+    ordering = ['start_time']
 
     def get_queryset(self):
         return Performance.objects.select_related('play', 'theatre_hall')
@@ -62,11 +77,13 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         return PerformanceSerializer
 
 
-
 class ReservationViewSet(viewsets.ModelViewSet):
     serializer_class = ReservationSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ReservationFilter
+
+    ordering_fields = ['created_at', 'user']
+    ordering = ['created_at']
 
     def get_queryset(self):
         return Reservation.objects.select_related('user').prefetch_related('tickets')
@@ -77,3 +94,5 @@ class TicketViewSet(viewsets.ModelViewSet):
         return Ticket.objects.select_related('performance', 'reservation')
 
     serializer_class = TicketSerializer
+    ordering_fields = ['created_at', 'performance']
+    ordering = ['created_at']
