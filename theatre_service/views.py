@@ -19,7 +19,6 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     ordering_fields = ['name']
     ordering = ['name']
-    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
 
 class ActorViewSet(viewsets.ModelViewSet):
@@ -27,7 +26,6 @@ class ActorViewSet(viewsets.ModelViewSet):
     serializer_class = ActorSerializer
     ordering_fields = ['last_name', 'first_name']
     ordering = ['last_name', 'first_name']
-    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
 
 class PlayViewSet(viewsets.ModelViewSet):
@@ -38,7 +36,6 @@ class PlayViewSet(viewsets.ModelViewSet):
     search_fields = ["title", "actors__first_name", "actors__last_name"]
     ordering_fields = ['title', 'created_at']
     ordering = ['title']
-    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
     def get_queryset(self):
         return Play.objects.prefetch_related('genres', 'actors')
@@ -54,7 +51,6 @@ class TheatreHallViewSet(viewsets.ModelViewSet):
     serializer_class = TheatreHallSerializer
     ordering_fields = ['name']
     ordering = ['name']
-    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
@@ -65,7 +61,6 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     search_fields = ["play__title", "play__actors__first_name", "play__actors__last_name"]
     ordering_fields = ['show_time', 'created_at']
     ordering = ['show_time']
-    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
     def get_queryset(self):
         return Performance.objects.select_related('play', 'theatre_hall')

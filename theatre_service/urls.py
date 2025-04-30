@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from theatre_service.views import (
     GenreViewSet, ActorViewSet, PlayViewSet, TheatreHallViewSet,
     PerformanceViewSet, ReservationViewSet, TicketViewSet
@@ -28,9 +29,11 @@ public_router.register(r'genres', PublicGenreViewSet, basename='public-genre')
 public_router.register(r'actors', PublicActorViewSet, basename='public-actor')
 public_router.register(r'halls', PublicTheatreHallViewSet, basename='public-hall')
 
+
 urlpatterns = [
-    path('api/admin/',include(authenticate_router.urls)),
-    path('api/public/',include(public_router.urls)),
+     path('', include(authenticate_router.urls)),
+     path('public/',include(public_router.urls)),
+
 ]
 
 
