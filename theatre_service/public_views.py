@@ -32,8 +32,8 @@ class PublicPerformanceViewSet(ReadOnlyModelViewSet):
     serializer_class = PerformanceSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ["play__title", "play__actors__first_name", "play__actors__last_name"]
-    ordering_fields = ['start_time']
-    ordering = ['start_time']
+    ordering_fields = ['show_time']
+    ordering = ['show_time']
     permission_classes = [AllowAny]
 
 
