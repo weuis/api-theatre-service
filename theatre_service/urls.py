@@ -37,4 +37,4 @@ urlpatterns = [
 ]
 
 
-app_name = "theatre_service"
+app_name = 'theatre'
