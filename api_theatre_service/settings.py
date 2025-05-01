@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'theatre_service',
     'theatre_user',
     'django_filters',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
