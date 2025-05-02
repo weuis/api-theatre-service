@@ -12,7 +12,6 @@ from theatre_service.public_views import (
 )
 
 authenticate_router = DefaultRouter()
-
 authenticate_router.register('genre', GenreViewSet, basename='genre')
 authenticate_router.register('actors', ActorViewSet, basename='actor')
 authenticate_router.register('plays', PlayViewSet, basename='play')
@@ -22,19 +21,15 @@ authenticate_router.register('reservations', ReservationViewSet, basename='reser
 authenticate_router.register('tickets', TicketViewSet, basename='ticket')
 
 public_router = DefaultRouter()
-
 public_router.register(r'plays', PublicPlayViewSet, basename='public-play')
 public_router.register(r'performances', PublicPerformanceViewSet, basename='public-performance')
 public_router.register(r'genres', PublicGenreViewSet, basename='public-genre')
 public_router.register(r'actors', PublicActorViewSet, basename='public-actor')
 public_router.register(r'halls', PublicTheatreHallViewSet, basename='public-hall')
 
-
 urlpatterns = [
-     path('', include(authenticate_router.urls)),
-     path('public/',include(public_router.urls)),
-
+    path('authenticated_only/', include(authenticate_router.urls)),
+    path('public/', include(public_router.urls)),
 ]
-
 
 app_name = 'theatre'

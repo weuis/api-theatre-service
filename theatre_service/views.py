@@ -1,6 +1,8 @@
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+
 from theatre_service.permissions import IsAdminOrAuthenticatedReadOnly
 from theatre_service.filters import PerformanceFilter, PlayFilter, ReservationFilter
 
@@ -80,6 +82,11 @@ class ReservationViewSet(viewsets.ModelViewSet):
     ordering = ['created_at']
     permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
+    def get_permissions(self):
+        if self.request.method in SAFE_METHODS:
+            return [IsAdminOrAuthenticatedReadOnly()]
+        return [IsAuthenticated()]
+
     def get_queryset(self):
         return Reservation.objects.select_related('user').prefetch_related('tickets')
 
@@ -91,6 +98,11 @@ class TicketViewSet(viewsets.ModelViewSet):
     ordering_fields = ['performance__show_time']
     ordering = ['performance__show_time']
     permission_classes = [IsAdminOrAuthenticatedReadOnly]
+
+    def get_permissions(self):
+        if self.request.method in SAFE_METHODS:
+            return [IsAdminOrAuthenticatedReadOnly()]
+        return [IsAuthenticated()]
 
     def get_queryset(self):
         return Ticket.objects.select_related('performance', 'reservation')
