@@ -11,7 +11,7 @@ __pycache__/
 *.db
 db.sqlite3
 
-# Env
+# Env files
 .env
 *.env
 
@@ -22,3 +22,37 @@ db.sqlite3
 # Migrations
 **/migrations/*.py
 !**/migrations/__init__.py
+
+# Test / Coverage
+*.cover
+.coverage
+coverage.xml
+*.log
+
+# Distribution / Packaging
+*.egg
+*.egg-info
+dist/
+build/
+.eggs/
+
+# PyInstaller
+#  Usually creates a build/ and dist/ directory
+#  Uncomment if you're building standalone executables.
+#  build/
+#  dist/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+.env/
+env/
+.venv/
+
+# MacOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
