@@ -27,7 +27,6 @@ db.sqlite3
 *.cover
 .coverage
 coverage.xml
-*.log
 
 # Distribution / Packaging
 *.egg
