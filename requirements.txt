@@ -1,23 +1,20 @@
-Django>=3.2,<5.0
-djangorestframework>=3.12,<4.0
-django-filter>=2.4,<3.0
-
-# Database dependencies
-psycopg2>=2.9,<3.0  # PostgreSQL adapter for Django (use if you're using PostgreSQL)
-# sqlite3 is default for Django, but for production, you should use PostgreSQL or another database.
-
-
-# Testing tools
-pytest>=6.0,<7.0
-pytest-django>=4.4,<5.0
-coverage>=5.5,<6.0
-
-# Development tools
-django-debug-toolbar>=3.2,<4.0  # For debugging your Django project
-ipython>=7.0,<8.0
-
-# Environment variables (used for managing secret keys and configuration)
-python-dotenv>=0.19.0,<1.0
-
-# Security
-django-extensions>=3.1,<4.0
+asgiref==3.8.1
+attrs==25.3.0
+Django==5.2
+django-debug-toolbar==5.2.0
+django-filter==25.1
+django-rest-framework==0.1.0
+djangorestframework==3.16.0
+drf-spectacular==0.28.0
+inflection==0.5.1
+jsonschema==4.23.0
+jsonschema-specifications==2025.4.1
+psycopg==3.2.7
+python-decouple==3.8
+python-dotenv==1.1.0
+PyYAML==6.0.2
+referencing==0.36.2
+rpds-py==0.24.0
+sqlparse==0.5.3
+typing_extensions==4.13.2
+uritemplate==4.1.1
