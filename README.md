@@ -1,5 +1,4 @@
 # api-theatre-service
-
 🎭 Theatre Service API
 
 Welcome to the Theatre Service API! This API provides an efficient and scalable backend system for managing a theatre's plays, performances, tickets, reservations, and users. The service supports both authenticated and unauthenticated users, with endpoints that allow interaction with various theatre data, such as plays, performances, actors, tickets, and reservations.

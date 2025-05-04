@@ -52,6 +52,5 @@ env/
 
 # MacOS system files
 .DS_Store
-
-# Windows system files
-Thumbs.db
+.idea
+venv
