@@ -1,3 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+db.sqlite3
+
+# Env files
+.env
+*.env
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# Migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Test / Coverage
+*.cover
+.coverage
+coverage.xml
+
+# Distribution / Packaging
+*.egg
+*.egg-info
+dist/
+build/
+.eggs/
+
+# PyInstaller
+#  Usually creates a build/ and dist/ directory
+#  Uncomment if you're building standalone executables.
+#  build/
+#  dist/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+.env/
+env/
+.venv/
+
+# MacOS system files
+.DS_Store
 .idea
 venv
-.DS_Store
